@@ -11,7 +11,8 @@ using namespace std;
 int main () {
   string line;
   ifstream myfile ("sample.txt");
-  map <string,map<string,int> myMap;
+  //std::map< int,std::map<std::string,double> > map_data;
+  map <string,map<string,int>> myMap;
   if (myfile.is_open())
   {
     while ( getline (myfile,line) )
@@ -44,26 +45,33 @@ int main () {
         cout<<counter<<endl;
         for(short i=0;i<counter;i++){
             cout<<strWords[i]<<endl;
-
-// std::map< int,std::map<std::string,double> > map_data;
-
-// std::map<std::string, double> data;
-
-// data.emplace("window", 3.14);
-
-// map_data.emplace(0, data);
+            
+//               myMap["Hello"].insert(make_pair("ek",3));
 
 
-            myMap[strWords[i]] = map<strWords[i],4>;
 
+// cout<<myMap.find("Hello")->first<<endl;
+            if(myMap.find(strWords[i]) == myMap.end() && i+1>counter){
+                cout <<"BAD"<<endl;
+                myMap[strWords[i]].insert(make_pair(strWords[i+1],1));
+            }
+
+
+            // myMap[strWords[i]] = map<strWords[i],4>;
+
+            // myMap[strWords[i]].insert(make_pair("ek",3)
         }
     }
 
     myfile.close();
     for (auto x : myMap) {
-        cout << x.first << " " << x.second << endl; 
-    }
+         cout << x.first <<endl; 
+         for (auto y: x.second){
+             cout << y.first<<":"<< y.second<<endl; 
+         }
+     }
   }
+
 
   else cout << "Unable to open file"; 
 
