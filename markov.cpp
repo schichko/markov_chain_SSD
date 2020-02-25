@@ -11,8 +11,8 @@ using namespace std;
 int main () {
   string line;
   ifstream myfile ("sample.txt");
-  //std::map< int,std::map<std::string,double> > map_data;
   map <string,map<string,int>> myMap;
+
   if (myfile.is_open())
   {
     while ( getline (myfile,line) )
@@ -22,7 +22,6 @@ int main () {
         short counter = 0;
 
         for(short i=0;i<=line.length();i++){
-            //strWords[counter] = line[i];
             cout<<line[i]<<endl;
             if(line[i] == ' ' ){
                 counter++;
@@ -45,21 +44,13 @@ int main () {
         cout<<counter<<endl;
         for(short i=0;i<counter;i++){
             cout<<strWords[i]<<endl;
-            
-//               myMap["Hello"].insert(make_pair("ek",3));
 
 
-
-// cout<<myMap.find("Hello")->first<<endl;
             if(myMap.find(strWords[i]) == myMap.end() && i+1>counter){
                 cout <<"BAD"<<endl;
                 myMap[strWords[i]].insert(make_pair(strWords[i+1],1));
             }
-
-
-            // myMap[strWords[i]] = map<strWords[i],4>;
-
-            // myMap[strWords[i]].insert(make_pair("ek",3)
+            
         }
     }
 
