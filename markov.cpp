@@ -1,3 +1,4 @@
+// reading a text file
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,64 +8,62 @@
 #include <map>
 using namespace std;
 
-int main(){
+int main () {
+  string line;
+  ifstream myfile ("sample.txt");
+  map <string,map<string,int> > myMap;
 
-    string line;
-    ifstream myfile("sample.txt");
-    map<string, map<string, int> > myMap;
+  if (myfile.is_open()){
+    while ( getline (myfile,line) ) {
+        string strWords[line.length()];
+        short counter = 0;
 
-    if (myfile.is_open()){
-        while (getline(myfile, line)){
+        for(short i=0;i<=line.length();i++){
 
-            cout << line.length() << endl;
-            string strWords[line.length()];
-            short counter = 0;
-
-            // Reading line of file
-            for (short i = 0; i <= line.length(); i++){
-                if (line[i] == ' '){
-                    counter++;
-                }
-                else if (line[i] == '.'){
-                    counter++;
-                    strWords[counter] += line[i];
-                    counter++;
-                }
-                else if (line[i] == '\n' || i == line.length()){
-                    cout << "null terminator" << endl;
-                    counter++;
-                }
-                else{
-                    strWords[counter] += line[i];
-                }
+            if(line[i] == ' ' ){
+                counter++;
             }
+            else if(line[i] == '.'){
+                counter++;
+                strWords[counter] += line[i];
+                counter++;
 
-            for (short i = 0; i < counter; i++){
-                cout << strWords[i] << endl;
-
-                if (myMap.find(strWords[i]) == myMap.end() && i + 1 < counter){
-                    cout << "First Event" << endl;
-                    myMap[strWords[i]].insert(make_pair(strWords[i + 1], 1));
-                }
-                else if(i + 1 < counter){
-                    cout << "Second +" << endl;
-                    myMap[strWords[i]].insert(make_pair(strWords[i + 1], 1));
-                }
+            }
+            else if(line[i]=='\n' || i == line.length()){
+                counter++;
+            }
+            else{
+                strWords[counter] += line[i];
             }
         }
 
-        myfile.close();
-        for (auto x : myMap){
-            cout << x.first << endl;
-            for (auto y : x.second){
-                cout << y.first << ":" << y.second << endl;
+        for(short i=0;i<counter;i++){
+            if(myMap.find(strWords[i]) == myMap.end() && i+1<counter){
+                cout <<"First Event: " + strWords[i] <<endl;
+                myMap[strWords[i]].insert(make_pair(strWords[i+1],1));
+            }
+            
+            else if( i+1<counter){
+                cout <<"Found again: " + strWords[i] <<endl;
+                // Found another instance of the word so increase the given value
+                myMap[strWords[i]][strWords[i + 1]] += 1;
             }
         }
     }
+    myfile.close();
 
-    else {
-        cout << "Unable to open file";
+    cout << "File Closed" << endl;
+
+    for(auto x : myMap) {
+        cout << x.first << endl;
+        for(auto y : x.second) {
+            cout << y.first << ": " << y.second << endl;
+        }
+        cout << endl;
+    }
+  } else {
+        cout << "Unable to open file" << endl; 
     }
 
-    return 0;
+  return 0;
 }

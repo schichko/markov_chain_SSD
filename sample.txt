@@ -1,2 +1,2 @@
 The cat scared the dog. The cat scared the dog.
-T
+The dog scared the cat. The dog scared the cat.
