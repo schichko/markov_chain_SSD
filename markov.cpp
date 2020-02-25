@@ -12,15 +12,16 @@ int main(){
     string line;
     ifstream myfile("sample.txt");
     map<string, map<string, int> > myMap;
+
     if (myfile.is_open()){
         while (getline(myfile, line)){
+
             cout << line.length() << endl;
             string strWords[line.length()];
             short counter = 0;
 
+            // Reading line of file
             for (short i = 0; i <= line.length(); i++){
-
-                cout << line[i] << endl;
                 if (line[i] == ' '){
                     counter++;
                 }
@@ -38,12 +39,15 @@ int main(){
                 }
             }
 
-            cout << counter << endl;
             for (short i = 0; i < counter; i++){
                 cout << strWords[i] << endl;
 
-                if (myMap.find(strWords[i]) == myMap.end() && i + 1 > counter){
-                    cout << "BAD" << endl;
+                if (myMap.find(strWords[i]) == myMap.end() && i + 1 < counter){
+                    cout << "First Event" << endl;
+                    myMap[strWords[i]].insert(make_pair(strWords[i + 1], 1));
+                }
+                else if(i + 1 < counter){
+                    cout << "Second +" << endl;
                     myMap[strWords[i]].insert(make_pair(strWords[i + 1], 1));
                 }
             }
@@ -57,6 +61,7 @@ int main(){
             }
         }
     }
+
     else {
         cout << "Unable to open file";
     }
