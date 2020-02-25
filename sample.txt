@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 The cat flew over the bushes to the corner store and died there rest in peace cat.
+=======
+The cat scared the dog. The cat scared the dog.
+The dog scared the cat. The dog scared the cat.
+>>>>>>> 51c46826c7bd8ebfe08fcef836cd8b84ab020028
