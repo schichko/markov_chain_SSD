@@ -22,7 +22,7 @@ int main () {
         short counter = 0;
 
         for(short i=0;i<=line.length();i++){
-            cout<<line[i]<<endl;
+            //cout<<line[i]<<endl;
             if(line[i] == ' ' ){
                 counter++;
             }
@@ -46,15 +46,27 @@ int main () {
             cout<<strWords[i]<<endl;
 
 
-            if(myMap.find(strWords[i]) == myMap.end() && i+1>counter){
-                cout <<"BAD"<<endl;
+            if(myMap.find(strWords[i]) == myMap.end() && i+1<counter){
+                cout <<"First Event"<<endl;
                 myMap[strWords[i]].insert(make_pair(strWords[i+1],1));
             }
             
+            else if( i+1<counter){
+                cout <<"Second +"<<endl;
+                for (auto x : myMap) {
+                    cout << x.first <<endl; 
+                    if(x.second.find(strWords[i+1]) ==myMap.end()){
+                        
+                    }
+                }
+                myMap[strWords[i]].insert(make_pair(strWords[i+1],1));
+            }
+
         }
     }
 
     myfile.close();
+
     for (auto x : myMap) {
          cout << x.first <<endl; 
          for (auto y: x.second){
