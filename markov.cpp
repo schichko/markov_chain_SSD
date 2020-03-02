@@ -18,60 +18,65 @@ map<string,map<string,int>> generateMap (string fileName)
   {
     while ( getline (myfile,line) )
     {
+        //cout<<"NEW LINE"<<endl;
         //cout<<line.length()<<endl;
         string strWords[line.length()];
         int counter = 0;
-
-        for(int i=0;i<=line.length();i++){
-            //cout<<line[i]<<endl;
-            if(line[i] == ' '){
-                counter++;
-            }
-            else if(line[i] == '.'){
-                if(i+1 <= line.length() && line[i+1] == ' '){
+        if(line.length() >0){
+            for(int i=0;i<=line.length();i++){
+                //cout<<line[i]<<endl;
+                if(line[i] == ' ' && strWords[counter]==""){
+                    //cout<<"Empty"<<endl;
+                }
+                else if(line[i] == ' '){
                     counter++;
+                }
+                else if(line[i] == '.'){
+                    if(i+1 <= line.length() && line[i+1] == ' '){
+                        counter++;
+                        strWords[counter] += line[i];
+                        counter++;
+                        i++;
+                    }
+                    else{
+                        counter++;
+                        strWords[counter] += line[i];
+                        counter++;
+                    }
+                }
+                else if(line[i-1]!='.' && (line[i]=='\n'|| i == line.length())){
+                    //cout<<"Null"<<endl;
+                    
                     strWords[counter] += line[i];
                     counter++;
-                    i++;
+                    strWords[counter]+= '.';
+                    counter++;
+                }
+                else if(line[i]=='\n' || i == line.length()){
+                    counter++;
                 }
                 else{
-                    counter++;
                     strWords[counter] += line[i];
-                    counter++;
                 }
             }
-            else if(line[i-1]!='.' && (line[i]=='\n'|| i == line.length())){
-                cout<<"Null"<<endl;
-                
-                strWords[counter] += line[i];
-                counter++;
-                strWords[counter]+= '.';
-                counter++;
-            }
-            else if(line[i]=='\n' || i == line.length()){
-                counter++;
-            }
-            else{
-                strWords[counter] += line[i];
-            }
-        }
+            // cout<<"MADE IT"<<endl;
+            // cout<<counter<<endl;
+            //cout<<strWords[2]<<endl;
+            for(int i=0;i<counter;i++){
+                //cout<<strWords[i]<<endl;
+                if(strWords[i] != "."){
 
-        //cout<<counter<<endl;
-        //cout<<strWords[2]<<endl;
-        for(int i=0;i<counter;i++){
-            //cout<<strWords[i]<<endl;
-            if(strWords[i] != "."){
-
-                if(myMap.find(strWords[i]) == myMap.end() && i+1<counter){
-                    //cout <<"First Event"<<endl;
-                    myMap[strWords[i]].insert(make_pair(strWords[i+1],1));
+                    if(myMap.find(strWords[i]) == myMap.end() && i+1<counter){
+                        //cout <<"First Event"<<endl;
+                        myMap[strWords[i]].insert(make_pair(strWords[i+1],1));
+                    }
+                    
+                    else if( i+1<counter){                
+                        myMap[strWords[i]][strWords[i+1]]++;
+                    }
                 }
-                
-                else if( i+1<counter){                
-                    myMap[strWords[i]][strWords[i+1]]++;
-                }
-            }
 
+            }
         }
     }
 
@@ -101,18 +106,66 @@ void generateStory(map<string,map<string,int>> myMap){
     //cout<<r<<endl;
 
     bool loop = true;
+    short sentenceLength=0; 
+    string currentWord;
     while(loop == true){
 
-        auto it = myMap.begin();
-        std::advance(it, rand() % myMap.size());
+        if(sentenceLength ==0 ){
+            auto it = myMap.begin();
+            std::advance(it, rand() % myMap.size());
 
         
-        if(it->first[0] <91){
-            cout<<it->first<<endl;
-            loop = false;
+            if(it->first[0] <91 ){
+                currentWord = it->first;
+                sentenceLength++;
+                cout<<currentWord<<endl;
+                
+            }
         }
         else{
+            // auto it = myMap[currentWord].begin();
+            // std::advance(it, rand() % myMap[currentWord].size());
+            map<string, int>::iterator it;
+            double *weights = new double [myMap[currentWord].size()];
+            string *words = new string [myMap[currentWord].size()];
+            int count = 0;
+            int totalWords = 0;
+            for ( it = myMap[currentWord].begin(); it != myMap[currentWord].end(); it++ )
+            {
+                //std::cout << it->first  << ':'<< it->second << std::endl;
+                totalWords = totalWords + it->second;
+                weights[count] = it->second;
+                words[count] = it->first;
+                count++;
+            }
+
+            for(int i = 0; i< myMap[currentWord].size();i++){
+                //cout<<weights[i]<<endl;
+                weights[i] = weights[i] / (double)totalWords;
+                //cout<<weights[i]<<endl;
+            }
             
+            bool didSelect = false;
+            while(didSelect == false){
+                double r = ((double) rand() / (RAND_MAX));
+                //cout<<r<<endl;
+                for (int i = 0; i< myMap[currentWord].size();i++){
+                    if(r <= weights[i]){
+                        currentWord = words[i];
+                        didSelect = true;
+                        break;
+                    }
+                }
+            }
+
+            
+            sentenceLength++;
+            cout<<currentWord<<endl;
+            if(currentWord == "."){
+                loop = false;
+            }
+            //free(weights);
+            //free(words);
         }
     }
 
