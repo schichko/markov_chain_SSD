@@ -38,14 +38,12 @@ int main () {
         }
 
         for(short i=0;i<counter;i++){
+            // First time seeing word, add it to first part of map with its second word associated
             if(myMap.find(strWords[i]) == myMap.end() && i+1<counter){
-                cout <<"First Event: " + strWords[i] <<endl;
                 myMap[strWords[i]].insert(make_pair(strWords[i+1],1));
             }
-            
+            // Found another instance of the word so increase the given value
             else if( i+1<counter){
-                cout <<"Found again: " + strWords[i] <<endl;
-                // Found another instance of the word so increase the given value
                 myMap[strWords[i]][strWords[i + 1]] += 1;
             }
         }
