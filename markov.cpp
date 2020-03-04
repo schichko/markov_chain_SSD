@@ -8,60 +8,183 @@
 #include <map>
 using namespace std;
 
-int main () {
+map<string,map<string,int>> generateMap (string fileName)
+{
   string line;
-  ifstream myfile ("sample.txt");
-  map <string,map<string,int> > myMap;
+  ifstream myfile (fileName);
+  map <string,map<string,int>> myMap;
 
-  if (myfile.is_open()){
-    while ( getline (myfile,line) ) {
+  if (myfile.is_open())
+  {
+    while ( getline (myfile,line) )
+    {
+        //cout<<"NEW LINE"<<endl;
+        //cout<<line.length()<<endl;
         string strWords[line.length()];
-        short counter = 0;
+        int counter = 0;
+        if(line.length() >0){
+            for(int i=0;i<=line.length();i++){
+                //cout<<line[i]<<endl;
+                if(line[i] == ' ' && strWords[counter]==""){
+                    //cout<<"Empty"<<endl;
+                }
+                else if(line[i] == ' '){
+                    counter++;
+                }
+                else if(line[i] == '.'){
+                    if(i+1 <= line.length() && line[i+1] == ' '){
+                        counter++;
+                        strWords[counter] += line[i];
+                        counter++;
+                        i++;
+                    }
+                    else{
+                        counter++;
+                        strWords[counter] += line[i];
+                        counter++;
+                    }
+                }
+                else if(line[i-1]!='.' && (line[i]=='\n'|| i == line.length())){
+                    //cout<<"Null"<<endl;
+                    
+                    strWords[counter] += line[i];
+                    counter++;
+                    strWords[counter]+= '.';
+                    counter++;
+                }
+                else if(line[i]=='\n' || i == line.length()){
+                    counter++;
+                }
+                else{
+                    strWords[counter] += line[i];
+                }
+            }
+            // cout<<"MADE IT"<<endl;
+            // cout<<counter<<endl;
+            //cout<<strWords[2]<<endl;
+            for(int i=0;i<counter;i++){
+                //cout<<strWords[i]<<endl;
+                if(strWords[i] != "."){
 
-        for(short i=0;i<=line.length();i++){
+                    if(myMap.find(strWords[i]) == myMap.end() && i+1<counter){
+                        //cout <<"First Event"<<endl;
+                        myMap[strWords[i]].insert(make_pair(strWords[i+1],1));
+                    }
+                    
+                    else if( i+1<counter){                
+                        myMap[strWords[i]][strWords[i+1]]++;
+                    }
+                }
 
-            if(line[i] == ' ' ){
-                counter++;
-            }
-            else if(line[i] == '.'){
-                counter++;
-                strWords[counter] += line[i];
-                counter++;
-
-            }
-            else if(line[i]=='\n' || i == line.length()){
-                counter++;
-            }
-            else{
-                strWords[counter] += line[i];
-            }
-        }
-
-        for(short i=0;i<counter;i++){
-            // First time seeing word, add it to first part of map with its second word associated
-            if(myMap.find(strWords[i]) == myMap.end() && i+1<counter){
-                myMap[strWords[i]].insert(make_pair(strWords[i+1],1));
-            }
-            // Found another instance of the word so increase the given value
-            else if( i+1<counter){
-                myMap[strWords[i]][strWords[i + 1]] += 1;
             }
         }
     }
+
     myfile.close();
+    //cout<<"File Closed\n"<<endl;
+    for (auto x : myMap) {
+        // cout << x.first <<endl; 
+         for (auto y: x.second){
+          //   cout << y.first<<":"<< y.second<<endl; 
+         }
+        // cout<<endl;
+     }
+     return myMap;
+  }
 
-    cout << "File Closed" << endl;
 
-    for(auto x : myMap) {
-        cout << x.first << endl;
-        for(auto y : x.second) {
-            cout << y.first << ": " << y.second << endl;
+  else{
+       cout << "Unable to open file"; 
+       return myMap;
+  }
+
+}
+
+void generateStory(map<string,map<string,int>> myMap){
+    //cout << myMap.size()<< endl; 
+    //int r = (rand() % myMap.size());
+    //cout<<r<<endl;
+
+    bool loop = true;
+    short sentenceLength=0; 
+    string currentWord;
+    while(loop == true){
+
+        if(sentenceLength ==0 ){
+            auto it = myMap.begin();
+            std::advance(it, rand() % myMap.size());
+
+        
+            if(it->first[0] <91 ){
+                currentWord = it->first;
+                sentenceLength++;
+                cout<<currentWord<<endl;
+                
+            }
         }
-        cout << endl;
-    }
-  } else {
-        cout << "Unable to open file" << endl; 
+        else{
+            // auto it = myMap[currentWord].begin();
+            // std::advance(it, rand() % myMap[currentWord].size());
+            map<string, int>::iterator it;
+            double *weights = new double [myMap[currentWord].size()];
+            string *words = new string [myMap[currentWord].size()];
+            int count = 0;
+            int totalWords = 0;
+            for ( it = myMap[currentWord].begin(); it != myMap[currentWord].end(); it++ )
+            {
+                //std::cout << it->first  << ':'<< it->second << std::endl;
+                totalWords = totalWords + it->second;
+                weights[count] = it->second;
+                words[count] = it->first;
+                count++;
+            }
+
+            for(int i = 0; i< myMap[currentWord].size();i++){
+                //cout<<weights[i]<<endl;
+                weights[i] = weights[i] / (double)totalWords;
+                //cout<<weights[i]<<endl;
+            }
+            
+            bool didSelect = false;
+            while(didSelect == false){
+                double r = ((double) rand() / (RAND_MAX));
+                //cout<<r<<endl;
+                for (int i = 0; i< myMap[currentWord].size();i++){
+                    if(r <= weights[i]){
+                        currentWord = words[i];
+                        didSelect = true;
+                        break;
+                    }
+                }
+            }
+
+            
+            sentenceLength++;
+            cout<<currentWord<<endl;
+            if(currentWord == "."){
+                loop = false;
+            }
+            //free(weights);
+            //free(words);
+        }
     }
 
+    //cout<<myMap.length<<cout<<endl;
+}
+
+int main () {
+  srand((unsigned)time(0)); 
+  map<string,map<string,int>> generatedMap;
+  generatedMap = generateMap("sample.txt");
+
+//   for (auto x : generatedMap) {
+//          cout << x.first <<endl; 
+//          for (auto y: x.second){
+//              cout << y.first<<":"<< y.second<<endl; 
+//          }
+//          cout<<endl;
+//      }
+
+    generateStory(generatedMap);
   return 0;
 }
