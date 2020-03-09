@@ -103,6 +103,7 @@ void generateStory(map<string,map<string,int>> myMap){
     //cout<<r<<endl;
     bool generatingTweet = true;
     short tweetLength = 0;
+    string tweet;
     while(generatingTweet == true){
         bool loop = true;
         short sentenceLength=0; 
@@ -117,7 +118,7 @@ void generateStory(map<string,map<string,int>> myMap){
                 if(it->first[0] <91 ){
                     currentWord = it->first;
                     sentenceLength++;
-                    cout<<currentWord<<endl;
+                    tweet += currentWord + " ";
                     
                 }
             }
@@ -160,7 +161,7 @@ void generateStory(map<string,map<string,int>> myMap){
                 
                 sentenceLength++;
                 tweetLength ++;
-                cout<<currentWord<<endl;
+                tweet += currentWord + " ";
                 if(currentWord == "."){
                     loop = false;
                     if (tweetLength >= 155){
@@ -181,6 +182,8 @@ void generateStory(map<string,map<string,int>> myMap){
             }
         }
     }
+    cout << tweet << endl;
+
     //cout<<myMap.length<<cout<<endl;
 }
 
