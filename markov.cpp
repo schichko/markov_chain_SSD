@@ -163,6 +163,7 @@ void generateStory(map<string,map<string,int>> myMap){
                 tweetLength ++;
                 tweet += currentWord + " ";
                 if(currentWord == "."){
+                    cout<<endl;
                     loop = false;
                     if (tweetLength >= 155){
                         generatingTweet = false;
