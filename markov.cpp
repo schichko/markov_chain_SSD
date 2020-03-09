@@ -117,7 +117,7 @@ void generateStory(map<string,map<string,int>> myMap){
                 if(it->first[0] <91 ){
                     currentWord = it->first;
                     sentenceLength++;
-                    cout<<currentWord<<endl;
+                    cout<<currentWord<<" ";
                     
                 }
             }
@@ -160,8 +160,9 @@ void generateStory(map<string,map<string,int>> myMap){
                 
                 sentenceLength++;
                 tweetLength ++;
-                cout<<currentWord<<endl;
+                cout<<currentWord<<" ";
                 if(currentWord == "."){
+                    cout<<endl;
                     loop = false;
                     if (tweetLength >= 155){
                         generatingTweet = false;
