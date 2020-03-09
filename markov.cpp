@@ -18,13 +18,13 @@ map<string,map<string,int>> generateMap (string fileName)
   {
     while ( getline (myfile,line) )
     {
-        //cout<<"NEW LINE"<<endl;
         //cout<<line.length()<<endl;
         string strWords[line.length()];
         int counter = 0;
         if(line.length() >0){
+
             for(int i=0;i<=line.length();i++){
-                //cout<<line[i]<<endl;
+                
                 if(line[i] == ' ' && strWords[counter]==""){
                     //cout<<"Empty"<<endl;
                 }
@@ -44,9 +44,7 @@ map<string,map<string,int>> generateMap (string fileName)
                         counter++;
                     }
                 }
-                else if(line[i-1]!='.' && (line[i]=='\n'|| i == line.length())){
-                    //cout<<"Null"<<endl;
-                    
+                else if((i!= 0) && (line[i-1]!='.' && (line[i]=='\n'|| i == line.length()))){                    
                     strWords[counter] += line[i];
                     counter++;
                     strWords[counter]+= '.';
@@ -59,7 +57,8 @@ map<string,map<string,int>> generateMap (string fileName)
                     strWords[counter] += line[i];
                 }
             }
-            // cout<<"MADE IT"<<endl;
+
+            //  cout<<"MADE IT"<<endl;
             // cout<<counter<<endl;
             //cout<<strWords[2]<<endl;
             for(int i=0;i<counter;i++){
@@ -79,9 +78,7 @@ map<string,map<string,int>> generateMap (string fileName)
             }
         }
     }
-
     myfile.close();
-    //cout<<"File Closed\n"<<endl;
     for (auto x : myMap) {
         // cout << x.first <<endl; 
          for (auto y: x.second){
@@ -104,71 +101,86 @@ void generateStory(map<string,map<string,int>> myMap){
     //cout << myMap.size()<< endl; 
     //int r = (rand() % myMap.size());
     //cout<<r<<endl;
+    bool generatingTweet = true;
+    short tweetLength = 0;
+    while(generatingTweet == true){
+        bool loop = true;
+        short sentenceLength=0; 
+        string currentWord;
+        while(loop == true){
 
-    bool loop = true;
-    short sentenceLength=0; 
-    string currentWord;
-    while(loop == true){
+            if(sentenceLength ==0 ){
+                auto it = myMap.begin();
+                std::advance(it, rand() % myMap.size());
 
-        if(sentenceLength ==0 ){
-            auto it = myMap.begin();
-            std::advance(it, rand() % myMap.size());
-
-        
-            if(it->first[0] <91 ){
-                currentWord = it->first;
-                sentenceLength++;
-                cout<<currentWord<<endl;
-                
-            }
-        }
-        else{
-            // auto it = myMap[currentWord].begin();
-            // std::advance(it, rand() % myMap[currentWord].size());
-            map<string, int>::iterator it;
-            double *weights = new double [myMap[currentWord].size()];
-            string *words = new string [myMap[currentWord].size()];
-            int count = 0;
-            int totalWords = 0;
-            for ( it = myMap[currentWord].begin(); it != myMap[currentWord].end(); it++ )
-            {
-                //std::cout << it->first  << ':'<< it->second << std::endl;
-                totalWords = totalWords + it->second;
-                weights[count] = it->second;
-                words[count] = it->first;
-                count++;
-            }
-
-            for(int i = 0; i< myMap[currentWord].size();i++){
-                //cout<<weights[i]<<endl;
-                weights[i] = weights[i] / (double)totalWords;
-                //cout<<weights[i]<<endl;
-            }
             
-            bool didSelect = false;
-            while(didSelect == false){
-                double r = ((double) rand() / (RAND_MAX));
-                //cout<<r<<endl;
-                for (int i = 0; i< myMap[currentWord].size();i++){
-                    if(r <= weights[i]){
-                        currentWord = words[i];
-                        didSelect = true;
-                        break;
-                    }
+                if(it->first[0] <91 ){
+                    currentWord = it->first;
+                    sentenceLength++;
+                    cout<<currentWord<<endl;
+                    
                 }
             }
+            else{
+                // auto it = myMap[currentWord].begin();
+                // std::advance(it, rand() % myMap[currentWord].size());
+                map<string, int>::iterator it;
+                double *weights = new double [myMap[currentWord].size()];
+                string *words = new string [myMap[currentWord].size()];
+                int count = 0;
+                int totalWords = 0;
+                for ( it = myMap[currentWord].begin(); it != myMap[currentWord].end(); it++ )
+                {
+                    //std::cout << it->first  << ':'<< it->second << std::endl;
+                    totalWords = totalWords + it->second;
+                    weights[count] = it->second;
+                    words[count] = it->first;
+                    count++;
+                }
 
-            
-            sentenceLength++;
-            cout<<currentWord<<endl;
-            if(currentWord == "."){
-                loop = false;
+                for(int i = 0; i< myMap[currentWord].size();i++){
+                    //cout<<weights[i]<<endl;
+                    weights[i] = weights[i] / (double)totalWords;
+                    //cout<<weights[i]<<endl;
+                }
+                
+                bool didSelect = false;
+                while(didSelect == false){
+                    double r = ((double) rand() / (RAND_MAX));
+                    //cout<<r<<endl;
+                    for (int i = 0; i< myMap[currentWord].size();i++){
+                        if(r <= weights[i]){
+                            currentWord = words[i];
+                            didSelect = true;
+                            break;
+                        }
+                    }
+                }
+
+                
+                sentenceLength++;
+                tweetLength ++;
+                cout<<currentWord<<endl;
+                if(currentWord == "."){
+                    loop = false;
+                    if (tweetLength >= 155){
+                        generatingTweet = false;
+                    }
+                    else if(.25 > ((double) rand() / (RAND_MAX))){
+                        generatingTweet = false;
+                    }
+    
+                }
+                
+                // for(int i=0;i<myMap[currentWord].size();i++){
+                //     delete words[i];
+                //     delete weights[i] ;
+                // }
+                delete[] words;
+                delete[] weights;
             }
-            //free(weights);
-            //free(words);
         }
     }
-
     //cout<<myMap.length<<cout<<endl;
 }
 
@@ -176,7 +188,7 @@ int main () {
   srand((unsigned)time(0)); 
   map<string,map<string,int>> generatedMap;
   generatedMap = generateMap("sample.txt");
-
+    
 //   for (auto x : generatedMap) {
 //          cout << x.first <<endl; 
 //          for (auto y: x.second){
@@ -184,7 +196,6 @@ int main () {
 //          }
 //          cout<<endl;
 //      }
-
-    generateStory(generatedMap);
+  generateStory(generatedMap);
   return 0;
 }
